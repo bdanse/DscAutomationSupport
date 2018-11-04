@@ -5,7 +5,6 @@ Azure Automation Account support module
 
 ### Connect-Azure
 
-
 ``` powershell
 NAME
     Connect-Azure
@@ -27,6 +26,7 @@ SYNTAX
 ```
 
 ### Set-KeyvaultPSCredential
+
 ``` powershell
 NAME
     Get-KeyvaultPSCredential
@@ -35,11 +35,12 @@ SYNTAX
     Get-KeyvaultPSCredential [-Name] <string> [[-VaultName] <string>]  [<CommonParameters>]
 
 EXAMPLES
-Single keyvault PSCredential secret
+
+#Single keyvault PSCredential secret
 
 Set-KeyvaultPSCredential -Name 'Name1' -UserName 'domain\user2' -VaultName mykeyvault
 
-Create multiple keyvault PSCredential secrets based on a hashtable
+#Create multiple keyvault PSCredential secrets based on a hashtable
 
 $hash = @(
     @{
@@ -68,7 +69,7 @@ SYNTAX
     Get-KeyvaultPSCredential [-Name] <string> [[-VaultName] <string>]  [<CommonParameters>]
 
 EXAMPLES
-Retrieve a keyvault PSCredential object
+#Retrieve a keyvault PSCredential object
 
 Get-KeyvaultPSCredential -name Name1 -VaultName mykeyvault
 ```
