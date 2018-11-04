@@ -1,20 +1,47 @@
 function Set-KeyvaultPSCredential
 {
+    [CmdletBinding(DefaultParameterSetName='default')]
     param (
-        [Parameter(Mandatory = $true, ValueFromPipeline=$true)]
+        [Parameter(
+        Mandatory = $true,
+        ValueFromPipeline=$true,
+        ParameterSetName='pipeline')]
+        [object]$InputObject,
+
+        [Parameter(Mandatory = $true,
+        ValueFromPipeline=$true,
+        ParameterSetName='default')]
         [string]$Name,
-        [Parameter(Mandatory = $true, ValueFromPipeline=$true)]
+
+        [Parameter(Mandatory = $true,
+        ValueFromPipeline=$true,
+        ParameterSetName='default')]
         [string]$UserName,
+
         [Parameter(Mandatory = $true)]
         [string]$VaultName,
+
         [Parameter(Mandatory = $false)]
-        [string]$ChangePW = $false
+        [bool]$ChangePW = $false
     )
 
-    #Keyvault that is used for storing secrets
-    $keyVault = Get-AzureRmKeyVault | Where-Object -Property VaultName -eq $VaultName
-    if($keyVault)
+    Begin
     {
+        $keyVault = Get-AzureRmKeyVault | Where-Object -Property VaultName -eq $VaultName
+        if($null -eq $keyVault)
+        {
+            throw "Keyvault $vaultName not found."
+        }
+    }
+
+    Process {
+
+        if($PSCmdlet.ParameterSetName -eq 'pipeline')
+        {
+            $Name = $InputObject.Name
+            $UserName = $InputObject.UserName
+        }
+
         $CurrentSecret = $keyVault | Get-AzureKeyVaultSecret -Name $Name -ErrorAction SilentlyContinue
 
         $splat = @{
@@ -28,18 +55,11 @@ function Set-KeyvaultPSCredential
 
         if($null -eq $CurrentSecret -or $ChangePW -eq $true)
         {
-            Write-Output "Creating/Updating secret for $($Name) on $($VaultName)."
             Set-AzureKeyVaultSecret @Splat
         }
         else
         {
-            Write-Output "No action for $($Name) on $($VaultName)."
             $CurrentSecret
         }
     }
-    else
-    {
-        Write-Error "Keyvault $vaultName not found."
-    }
 }
-

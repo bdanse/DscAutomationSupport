@@ -13,7 +13,7 @@ function Get-KeyvaultPSCredential
 
     if(-not $PSBoundParameters.ContainsKey('VaultName'))
     {
-        $VaultName = Get-AutomationVariable -Name KeyVaultPSCredential
+        $VaultName = Get-AutomationVariable -Name PSCredentialKeyVault
 
     }
 
